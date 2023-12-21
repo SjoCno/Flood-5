@@ -1,0 +1,9 @@
+Notulen 21-12-2023
+
+Predict WD for every timestep. WD timestep is input for next timestep.
+Start with water in domain, t=1 and not dry domain (t=0).
+To reduce the accumulating error, a larger timestep can be used (depends also on the choice of model).
+
+Basis is to make a prediction on WD using only WD and DEM to train, can be expanded by including the velocities. 
+If velocities are included, use the vector |V| and not individual components.
+Another option is using the discharge |Q| = np.sqrt((VX*WD)**2 + (VY*WD)**2)
