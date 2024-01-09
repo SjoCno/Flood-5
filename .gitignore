@@ -1,2 +1,4 @@
 *.txt
 notebooks/raw_datasets/overview.csv
+.env
+.ipnyb_checkpoints
