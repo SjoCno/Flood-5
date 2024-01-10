@@ -1,15 +1,7 @@
-import numpy as np
-import networkx as nx
-import os
-import pickle
-from tqdm import tqdm
-import torch
-from torch_geometric.data import Data
-
 def center_grid_graph(dim1, dim2):
     '''
     Create graph from a rectangular grid of dimensions dim1 x dim2
-    Returns networkx graph connecting the grid centers and corresponding
+    Returns networkx graph connecting the grid centers and corresponding 
     node positions
     ------
     dim1: int
@@ -20,7 +12,7 @@ def center_grid_graph(dim1, dim2):
     G = nx.grid_2d_graph(dim1, dim2, create_using=nx.DiGraph)
     # for the position, it is assumed that they are located in the centre of each grid
     pos = {i:(x+0.5,y+0.5) for i, (x,y) in enumerate(G.nodes())}
-
+    
     #change keys from (x,y) format to i format
     mapping = dict(zip(G, range(0, G.number_of_nodes())))
     G = nx.relabel_nodes(G, mapping)
@@ -41,21 +33,21 @@ def create_grid_dataset(dataset_folder, n_sim, start_sim=1, number_grids=64):
     grid_dataset = []
 
     graph, pos = center_grid_graph(number_grids,number_grids)
-
+    
     for i in tqdm(range(start_sim,start_sim+n_sim)):
 
-        DEM = np.loadtxt(f"{dataset_folder}/DEM/DEM_{i}.txt")[:,2]
-        WD = np.loadtxt(f"{dataset_folder}/WD/WD_{i}.txt")
-        VX = np.loadtxt(f"{dataset_folder}/VX/VX_{i}.txt")
-        VY = np.loadtxt(f"{dataset_folder}/VY/VY_{i}.txt")
-
-        grid_i = convert_to_pyg(graph, pos, DEM, WD, VX, VY)
+        DEM = np.loadtxt(f"{dataset_folder}\\DEM\\DEM_{i}.txt")[:,2]
+        WD = np.loadtxt(f"{dataset_folder}\\WD\\WD_{i}.txt")
+#         VX = np.loadtxt(f"{dataset_folder}\\VX\\VX_{i}.txt")
+#         VY = np.loadtxt(f"{dataset_folder}\\VY\\VY_{i}.txt")
+        
+        grid_i = convert_to_pyg(graph, pos, DEM, WD)  # VX, VY
         grid_dataset.append(grid_i)
-
+    
     return grid_dataset
 
-def convert_to_pyg(graph, pos, DEM, WD, VX, VY):
-    '''Converts a graph or mesh into a PyTorch Geometric Data type
+def convert_to_pyg(graph, pos, DEM, WD):  # VX, VY
+    '''Converts a graph or mesh into a PyTorch Geometric Data type 
     Then, add position, DEM, and water variables to data object'''
     DEM = DEM.reshape(-1)
 
@@ -79,9 +71,7 @@ def convert_to_pyg(graph, pos, DEM, WD, VX, VY):
     data.pos = torch.tensor(list(pos.values()))
     data.DEM = torch.FloatTensor(DEM)
     data.WD = torch.FloatTensor(WD.T)
-    data.VX = torch.FloatTensor(VX.T)
-    data.VY = torch.FloatTensor(VY.T)
-
+        
     return data
 
 def get_coords(pos):
@@ -108,12 +98,25 @@ def save_database(dataset, name, out_path='datasets'):
     '''
     n_sim = len(dataset)
     path = f"{out_path}/{name}.pkl"
-
+    
     if os.path.exists(path):
         os.remove(path)
     elif not os.path.exists(out_path):
         os.mkdir(out_path)
-
+    
     pickle.dump(dataset, open(path, "wb" ))
-
+        
     return None
+
+
+def normalize_dataset(dataset, scaler_DEM, scaler_WD):
+    min_DEM, max_DEM = scaler_DEM.data_min_[0], scaler_DEM.data_max_[0]
+    min_WD, max_WD = scaler_WD.data_min_[0], scaler_WD.data_max_[0]
+    normalized_dataset = []
+    for idx in range(len(dataset)):
+        DEM = dataset[idx]['DEM']
+        WD = dataset[idx]['WD']
+        norm_DEM = (DEM - min_DEM) / (max_DEM - min_DEM)
+        norm_WD = (WD - min_WD) / (max_WD - min_WD)
+        normalized_dataset.append((norm_DEM, norm_WD))
+    return normalized_dataset
