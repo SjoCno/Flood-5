@@ -4,3 +4,4 @@ notebooks/raw_datasets/overview.csv
 .ipnyb_checkpoints
 .pkl
 notebooks/datasets/train/grid.pkl
+notebooks/datasets/train/grid_train.pkl
