@@ -5,3 +5,4 @@ notebooks/raw_datasets/overview.csv
 .pkl
 notebooks/datasets/train/grid.pkl
 notebooks/datasets/train/grid_train.pkl
+*.pkl
