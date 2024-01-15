@@ -25,4 +25,26 @@ Week 9:
 
 Week 10:
 
-1. Finish
+1. Finish and present
+
+---------------------------------------------------------------------
+ToDo's:
+
+- Include velocity data as input on the CNN multi-output model (Derby)
+- Apply data-augmentation on the inputs on the CNN multi-output model (Michael)
+- Tweaking hyperparameters for the CNN multi-output model (Prayla)
+- Work on the CNN auto-regressive model (Karen)
+- Build a CNN-LSTM model (Sjoerd)
+
+Later on ToDo's:
+
+- Include velocity data as input on the CNN auto-regressive model 
+- Apply data-augmentation on the inputs on the CNN auto-regressive model
+- Tweaking hyperparameters for the CNN auto-regressive model
+- Combine results into a presentation
+
+
+
+---------------------------------------------------------------------
+Finished ToDo's!
+
