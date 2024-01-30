@@ -1,8 +1,7 @@
-.txt
+*.txt
 notebooks/raw_datasets/overview.csv
-.env
-.ipnyb_checkpoints
-.pkl
+*.env
+*.ipnyb_checkpoints
 notebooks/datasets/train/grid.pkl
 notebooks/datasets/train/grid_train.pkl
 *.pkl
