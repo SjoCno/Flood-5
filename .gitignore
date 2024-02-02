@@ -1,3 +1,4 @@
 *.txt
 notebooks/raw_datasets/overview.csv
 notebooks/datasets/train/grid.pkl
+*.pkl

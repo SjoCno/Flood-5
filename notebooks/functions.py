@@ -70,15 +70,15 @@ def create_grid_dataset(dataset_folder, n_sim, start_sim=1, number_grids=64):
 
         DEM = np.loadtxt(f"{dataset_folder}\\DEM\\DEM_{i}.txt")[:,2]
         WD = np.loadtxt(f"{dataset_folder}\\WD\\WD_{i}.txt")
-#         VX = np.loadtxt(f"{dataset_folder}\\VX\\VX_{i}.txt")
-#         VY = np.loadtxt(f"{dataset_folder}\\VY\\VY_{i}.txt")
+        VX = np.loadtxt(f"{dataset_folder}\\VX\\VX_{i}.txt")
+        VY = np.loadtxt(f"{dataset_folder}\\VY\\VY_{i}.txt")
         
-        grid_i = convert_to_pyg(graph, pos, DEM, WD)  # VX, VY
+        grid_i = convert_to_pyg(graph, pos, DEM, WD, VX, VY)  # VX, VY
         grid_dataset.append(grid_i)
     
     return grid_dataset
 
-def convert_to_pyg(graph, pos, DEM, WD):  # VX, VY
+def convert_to_pyg(graph, pos, DEM, WD, VX, VY):  # VX, VY
     '''Converts a graph or mesh into a PyTorch Geometric Data type 
     Then, add position, DEM, and water variables to data object'''
     DEM = DEM.reshape(-1)
@@ -103,6 +103,8 @@ def convert_to_pyg(graph, pos, DEM, WD):  # VX, VY
     data.pos = torch.tensor(list(pos.values()))
     data.DEM = torch.FloatTensor(DEM)
     data.WD = torch.FloatTensor(WD.T)
+    data.VX = torch.FloatTensor(VX.T)
+    data.VY = torch.FloatTensor(VY.T)
         
     return data
 
